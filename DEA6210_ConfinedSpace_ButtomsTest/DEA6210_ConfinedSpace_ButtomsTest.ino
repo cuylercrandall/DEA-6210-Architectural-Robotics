@@ -1,6 +1,6 @@
-int clockwise = 11;
-int counterclockwise = 13;
-int modeButtom = 12;
+int clockwise = 2;
+int counterclockwise = 4;
+int modeButtom = 3;
 bool cwState = false;
 bool ccwState = false;
 bool modeState = false;
@@ -13,14 +13,21 @@ void setup() {
   pinMode(clockwise, INPUT);
   pinMode(counterclockwise, INPUT);
   pinMode(modeButtom, INPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(6,OUTPUT);
+  digitalWrite(6,HIGH);
+  //pinMode(7,OUTPUT);
+  //digitalWrite(7,LOW);
 }
 
 void loop() {
   // Read input pins
-  cwState = digitalRead(clockwise);
-  ccwState = digitalRead(counterclockwise);
-  modeState = digitalRead(modeButtom);
+  for (int i=0; i<10; i++){
+    cwState = cwState || (digitalRead(clockwise)==HIGH);
+    ccwState = ccwState || (digitalRead(counterclockwise)==HIGH);
+    modeState = modeState || (digitalRead(modeButtom)==HIGH);
+    delay(200);
+  }
+
 
   // Display output based on pin states
   if ((cwState && ccwState) || (!cwState && !ccwState)){
@@ -39,20 +46,19 @@ void loop() {
     // If counterclockwise and mode switched, move the primary servo counterclockwise
     Serial.println("Primary counterclockwise");
   }
+
+  if(cwState){
+    Serial.println("CW Pin High");
+  }
+  if(ccwState){
+    Serial.println("CCW Pin High");
+  }
+  if(modeState){
+    Serial.println("Mode Pin High");
+  }
   
-  // Status
-  Serial.println(digitalRead("Clockwise Pin: "+clockwise));
-  Serial.println(digitalRead("Counterclockwise Pin: "+counterclockwise));
-  Serial.println(digitalRead("Mode Pin: "+modeButtom));
-
-  // Heartbeat
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);  
-
-  // Reset input pins
-  cwState = LOW; 
-  ccwState = LOW;
-  modeState = LOW;
+  // Reset pin states
+  bool cwState = false;
+  bool ccwState = false;
+  bool modeState = false;
 }
