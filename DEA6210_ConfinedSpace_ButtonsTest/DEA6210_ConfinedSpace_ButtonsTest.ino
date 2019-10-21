@@ -1,8 +1,8 @@
 #include <Servo.h>
 
-int clockwise = 2;
-int counterclockwise = 4;
-int modeButtom = 3;
+int clockwise = A5;
+int counterclockwise = A3;
+int modeButtom = A4;
 bool cwState = false;
 bool ccwState = false;
 bool modeState = false;
@@ -19,10 +19,10 @@ void setup() {
   pinMode(clockwise, INPUT);
   pinMode(counterclockwise, INPUT);
   pinMode(modeButtom, INPUT);
-  pinMode(6,OUTPUT);
-  digitalWrite(6,HIGH);
-  pinMode(7,OUTPUT);
-  digitalWrite(7,LOW);
+  pinMode(A1,OUTPUT);
+  digitalWrite(A1,HIGH);
+  pinMode(A0,OUTPUT);
+  digitalWrite(A0,LOW);
 
   // Initializes servo output pins
   contServo.attach(9);
@@ -38,7 +38,7 @@ void loop() {
     cwState = cwState || (digitalRead(clockwise)==HIGH);
     ccwState = ccwState || (digitalRead(counterclockwise)==HIGH);
     modeState = modeState || (digitalRead(modeButtom)==HIGH);
-    delay(200);
+    delay(10);
   }
 
   //Cont. Servo Values: Forward = 180, Reverse = 0, Stop = 90
@@ -48,7 +48,7 @@ void loop() {
   if ((cwState && ccwState) || (!cwState && !ccwState)){
     // If both directions, do nothing
     Serial.println("Doing nothing");
-    contServo.write(90);
+    //contServo.write(90);
     
   } else if (cwState && modeState){
     // If clockwise and mode switched, move the secondary servo clockwise
@@ -66,7 +66,7 @@ void loop() {
   } else if (ccwState && !modeState){
     // If counterclockwise and mode switched, move the primary servo counterclockwise
     Serial.println("Primary counterclockwise");
-    contServo.write(0);
+    //contServo.write(0);
     
   }
 
@@ -84,4 +84,6 @@ void loop() {
   cwState = false;
   ccwState = false;
   modeState = false;
+
+  delay(500);
 }
